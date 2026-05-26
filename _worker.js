@@ -188,9 +188,15 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 				  grid-template-columns: 1fr;
 			  }
 		  }
-		  #targets label { margin-right: 16px; cursor: pointer; }
-		  #results table { margin-top: 12px; border-collapse: collapse; width: 100%; max-width: 400px; }
-		  #results td, #results th { padding: 6px 12px; border-bottom: 1px solid #eee; text-align: left; }
+		  #targets { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+		  #targets label { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.2s; }
+		  #targets label:hover { border-color: var(--primary-color); background: #fff8f0; }
+		  #targets label.checked { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+		  #results { margin-top: 16px; }
+		  #results table { width: 100%; max-width: 420px; border-collapse: collapse; }
+		  #results th { border-bottom: 2px solid var(--primary-color); padding: 8px 12px; text-align: left; font-size: 0.95em; }
+		  #results td { padding: 8px 12px; border-bottom: 1px solid #eee; }
+		  #results tr:hover td { background: #fafafa; }
 	  </style>
   </head>
   
@@ -272,7 +278,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 				  <h2>延迟检测</h2>
 				  <p>选择要测试的端点，点击开始检测即可测速：</p>
 				  <div id="targets">__UPSTREAM_CHECKBOXES__</div>
-				  <p><button onclick="runLatencyTest()" style="padding:8px 20px;cursor:pointer">开始检测</button></p>
+				  <p><button class="btn" onclick="runLatencyTest()">开始检测</button></p>
 				  <div id="results" style="display:none">
 					  <table><thead><tr><th>端点</th><th>延迟</th><th>状态</th></tr></thead><tbody></tbody></table>
 				  </div>
@@ -400,27 +406,22 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 		  </div>
 	  </footer>
   <script>
-const FIXED_QUERY = 'AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=';
+const FIXED_QUERY='AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=';
+document.querySelectorAll('#targets input').forEach(cb => {
+  cb.addEventListener('change', e => e.target.parentElement.classList.toggle('checked', e.target.checked));
+  cb.parentElement.classList.add('checked');
+});
 async function runLatencyTest() {
-  const results = document.getElementById('results');
-  results.style.display = 'block';
-  const tbody = results.querySelector('tbody');
-  tbody.innerHTML = '';
+  const results = document.getElementById('results'), tbody = results.querySelector('tbody');
+  results.style.display = 'block'; tbody.innerHTML = '';
   const checks = document.querySelectorAll('#targets input:checked');
-  if (!checks.length) { tbody.innerHTML = '<tr><td colspan=3>未选择端点</td></tr>'; return; }
-  const tasks = [...checks].map(async cb => {
-    const name = cb.value;
-    const row = tbody.insertRow();
-    row.innerHTML = '<td><strong>' + name + '</strong></td><td>...</td><td>...</td>';
-    const start = performance.now();
-    try {
-      const res = await fetch('/' + name + '/query-dns?dns=' + FIXED_QUERY);
-      row.cells[1].textContent = (performance.now() - start).toFixed(0) + 'ms';
-      row.cells[2].textContent = res.ok ? '\u2705' : '\u274C ' + res.status;
-    } catch(e) {
-      row.cells[1].textContent = '-';
-      row.cells[2].textContent = '\u274C';
-    }
+  if(!checks.length){tbody.innerHTML='<tr><td colspan=3 style="color:#999;text-align:center;padding:16px">未选择端点</td></tr>';return}
+  const tasks=[...checks].map(async cb=>{
+    const name=cb.value,row=tbody.insertRow();
+    row.innerHTML='<td><strong>'+name+'</strong></td><td style="color:#999">...</td><td style="color:#999">...</td>';
+    const start=performance.now();
+    try{const res=await fetch('/'+name+'/query-dns?dns='+FIXED_QUERY);row.cells[1].textContent=(performance.now()-start).toFixed(0)+'ms';row.cells[2].textContent=res.ok?'\u2705':'\u274C '+res.status}
+    catch(e){row.cells[1].textContent='-';row.cells[2].textContent='\u274C'}
   });
   await Promise.all(tasks);
 }
@@ -602,9 +603,15 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 				  grid-template-columns: 1fr;
 			  }
 		  }
-		  #targets label { margin-right: 16px; cursor: pointer; }
-		  #results table { margin-top: 12px; border-collapse: collapse; width: 100%; max-width: 400px; }
-		  #results td, #results th { padding: 6px 12px; border-bottom: 1px solid #eee; text-align: left; }
+		  #targets { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+		  #targets label { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.2s; }
+		  #targets label:hover { border-color: var(--primary-color); background: #fff8f0; }
+		  #targets label.checked { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+		  #results { margin-top: 16px; }
+		  #results table { width: 100%; max-width: 420px; border-collapse: collapse; }
+		  #results th { border-bottom: 2px solid var(--primary-color); padding: 8px 12px; text-align: left; font-size: 0.95em; }
+		  #results td { padding: 8px 12px; border-bottom: 1px solid #eee; }
+		  #results tr:hover td { background: #fafafa; }
 	  </style>
   </head>
 
@@ -686,7 +693,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 				  <h2>Latency Test</h2>
 				  <p>Select endpoints to test, then click start:</p>
 				  <div id="targets">__UPSTREAM_CHECKBOXES__</div>
-				  <p><button onclick="runLatencyTest()" style="padding:8px 20px;cursor:pointer">Start Test</button></p>
+				  <p><button class="btn" onclick="runLatencyTest()">Start Test</button></p>
 				  <div id="results" style="display:none">
 					  <table><thead><tr><th>Endpoint</th><th>Latency</th><th>Status</th></tr></thead><tbody></tbody></table>
 				  </div>
@@ -814,27 +821,22 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 		  </div>
 	  </footer>
   <script>
-const FIXED_QUERY = 'AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=';
+const FIXED_QUERY='AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=';
+document.querySelectorAll('#targets input').forEach(cb => {
+  cb.addEventListener('change', e => e.target.parentElement.classList.toggle('checked', e.target.checked));
+  cb.parentElement.classList.add('checked');
+});
 async function runLatencyTest() {
-  const results = document.getElementById('results');
-  results.style.display = 'block';
-  const tbody = results.querySelector('tbody');
-  tbody.innerHTML = '';
+  const results = document.getElementById('results'), tbody = results.querySelector('tbody');
+  results.style.display = 'block'; tbody.innerHTML = '';
   const checks = document.querySelectorAll('#targets input:checked');
-  if (!checks.length) { tbody.innerHTML = '<tr><td colspan=3>未选择端点</td></tr>'; return; }
-  const tasks = [...checks].map(async cb => {
-    const name = cb.value;
-    const row = tbody.insertRow();
-    row.innerHTML = '<td><strong>' + name + '</strong></td><td>...</td><td>...</td>';
-    const start = performance.now();
-    try {
-      const res = await fetch('/' + name + '/query-dns?dns=' + FIXED_QUERY);
-      row.cells[1].textContent = (performance.now() - start).toFixed(0) + 'ms';
-      row.cells[2].textContent = res.ok ? '\u2705' : '\u274C ' + res.status;
-    } catch(e) {
-      row.cells[1].textContent = '-';
-      row.cells[2].textContent = '\u274C';
-    }
+  if(!checks.length){tbody.innerHTML='<tr><td colspan=3 style="color:#999;text-align:center;padding:16px">未选择端点</td></tr>';return}
+  const tasks=[...checks].map(async cb=>{
+    const name=cb.value,row=tbody.insertRow();
+    row.innerHTML='<td><strong>'+name+'</strong></td><td style="color:#999">...</td><td style="color:#999">...</td>';
+    const start=performance.now();
+    try{const res=await fetch('/'+name+'/query-dns?dns='+FIXED_QUERY);row.cells[1].textContent=(performance.now()-start).toFixed(0)+'ms';row.cells[2].textContent=res.ok?'\u2705':'\u274C '+res.status}
+    catch(e){row.cells[1].textContent='-';row.cells[2].textContent='\u274C'}
   });
   await Promise.all(tasks);
 }
