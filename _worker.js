@@ -19,6 +19,7 @@ const DNS_UPSTREAMS = {
 const ECS_ENABLED = {
 	'/google':  true,
 	'/quad9':   true,
+	'/adguard': true,
 	'/opendns': true,
 };
 // ==========================================
