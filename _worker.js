@@ -1022,9 +1022,11 @@ async function handleRequest(request) {
 			}
 		}
 
+		const newHeaders = new Headers(request.headers);
+		newHeaders.delete('host');
 		const newRequest = new Request(newUrl, {
 			method: request.method,
-			headers: request.headers,
+			headers: newHeaders,
 			body: body,
 			redirect: 'follow',
 		});
