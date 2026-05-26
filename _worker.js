@@ -125,11 +125,8 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 			  margin: 1rem 0;
 		  }
   
-		  .sponsor {
-			  background-color: #fff8e1;
-			  border-left: 4px solid var(--primary-color);
-		  }
-  
+
+		  
 		  .cta {
 			  text-align: center;
 			  margin: 2rem 0;
@@ -151,6 +148,22 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 			  background-color: #e67e22;
 		  }
   
+		  .lang-switch {
+			  float: right;
+			  color: white;
+			  text-decoration: none;
+			  font-weight: bold;
+			  padding: 0.25rem 0.75rem;
+			  border: 2px solid white;
+			  border-radius: 4px;
+			  transition: background-color 0.3s, color 0.3s;
+		  }
+
+		  .lang-switch:hover {
+			  background-color: white;
+			  color: var(--primary-color);
+		  }
+
 		  .github-link {
 			  text-align: center;
 			  margin-bottom: 1rem;
@@ -181,6 +194,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   <body>
 	  <header>
 		  <div class="container">
+			  <a href="/en" class="lang-switch">EN</a>
 			  <h1>Cloudflare DoH 服务</h1>
 			  <p class="subtitle">一个轻量级的 DNS over HTTPS (DoH) 服务</p>
 		  </div>
@@ -365,22 +379,8 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 			  </div>
 		  </section>
   
-		  <section class="sponsor card">
-			  <h2>赞助商</h2>
-			  <h3><a href="https://www.adguardprivate.com" target="_blank">AdGuard Private</a> - 企业级 DNS 解析服务</h3>
-			  <p>感谢 <a href="https://www.adguardprivate.com" target="_blank">AdGuard Private</a> 对本项目的支持！</p>
-			  <ul>
-				  <li><strong>无限制查询</strong>：不受请求次数限制</li>
-				  <li><strong>隐私保护</strong>：增强的隐私保护机制</li>
-				  <li><strong>广告过滤</strong>：智能过滤广告和追踪器</li>
-				  <li><strong>灵活配置</strong>：支持自定义 DNS 记录</li>
-				  <li><strong>动态 DNS</strong>：内置 DDNS 功能</li>
-			  </ul>
-			  <div class="cta">
-				  <a href="https://www.adguardprivate.com" class="btn" target="_blank">了解更多</a>
-			  </div>
-		  </section>
-  
+
+		  
 		  <section>
 			  <h2>常见问题</h2>
 			  <div class="card">
@@ -416,6 +416,409 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 	  </footer>
   </body>
   
+   </html>`;
+
+const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+	  <meta charset="UTF-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <title>Cloudflare DoH Service - DNS over HTTPS</title>
+	  <style>
+		  :root {
+			  --primary-color: #f6821f;
+			  --secondary-color: #3b88c3;
+			  --dark-color: #404041;
+			  --light-color: #f4f4f4;
+			  --success-color: #5cb85c;
+			  --error-color: #d9534f;
+		  }
+
+		  * {
+			  box-sizing: border-box;
+			  margin: 0;
+			  padding: 0;
+		  }
+
+		  body {
+			  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			  line-height: 1.6;
+			  color: #333;
+			  background-color: var(--light-color);
+		  }
+
+		  .container {
+			  max-width: 1100px;
+			  margin: 0 auto;
+			  padding: 0 20px;
+		  }
+
+		  header {
+			  background-color: var(--primary-color);
+			  color: white;
+			  text-align: center;
+			  padding: 2rem 0;
+			  margin-bottom: 2rem;
+		  }
+
+		  header h1 {
+			  font-size: 2.5rem;
+			  margin-bottom: 0.5rem;
+		  }
+
+		  .subtitle {
+			  font-size: 1.2rem;
+			  font-weight: 300;
+		  }
+
+		  section {
+			  margin: 2rem 0;
+			  padding: 1.5rem;
+			  background-color: white;
+			  border-radius: 5px;
+			  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		  }
+
+		  h2 {
+			  color: var(--primary-color);
+			  margin-bottom: 1rem;
+			  border-bottom: 1px solid #eee;
+			  padding-bottom: 0.5rem;
+		  }
+
+		  h3 {
+			  color: var(--secondary-color);
+			  margin: 1rem 0;
+		  }
+
+		  ul,
+		  ol {
+			  margin: 1rem 0 1rem 1.5rem;
+		  }
+
+		  li {
+			  margin-bottom: 0.5rem;
+		  }
+
+		  pre {
+			  background-color: #f8f8f8;
+			  padding: 1rem;
+			  border-radius: 5px;
+			  overflow-x: auto;
+			  margin: 1rem 0;
+			  border-left: 4px solid var(--primary-color);
+		  }
+
+		  code {
+			  font-family: 'Courier New', monospace;
+		  }
+
+		  .example {
+			  background-color: #f9f9f9;
+			  padding: 1rem;
+			  border-radius: 5px;
+			  margin: 1rem 0;
+		  }
+
+		  .card {
+			  border: 1px solid #ddd;
+			  border-radius: 5px;
+			  padding: 1.5rem;
+			  margin: 1rem 0;
+		  }
+
+
+		  
+		  .cta {
+			  text-align: center;
+			  margin: 2rem 0;
+		  }
+
+		  .btn {
+			  display: inline-block;
+			  background-color: var(--primary-color);
+			  color: white;
+			  padding: 0.75rem 1.5rem;
+			  border: none;
+			  border-radius: 5px;
+			  text-decoration: none;
+			  font-weight: bold;
+			  transition: background-color 0.3s;
+		  }
+
+		  .btn:hover {
+			  background-color: #e67e22;
+		  }
+
+		  .lang-switch {
+			  float: right;
+			  color: white;
+			  text-decoration: none;
+			  font-weight: bold;
+			  padding: 0.25rem 0.75rem;
+			  border: 2px solid white;
+			  border-radius: 4px;
+			  transition: background-color 0.3s, color 0.3s;
+		  }
+
+		  .lang-switch:hover {
+			  background-color: white;
+			  color: var(--primary-color);
+		  }
+
+		  .github-link {
+			  text-align: center;
+			  margin-bottom: 1rem;
+		  }
+
+		  footer {
+			  text-align: center;
+			  padding: 2rem 0;
+			  background-color: var(--dark-color);
+			  color: white;
+			  margin-top: 2rem;
+		  }
+
+		  .grid {
+			  display: grid;
+			  grid-template-columns: repeat(2, 1fr);
+			  gap: 2rem;
+		  }
+
+		  @media (max-width: 768px) {
+			  .grid {
+				  grid-template-columns: 1fr;
+			  }
+		  }
+	  </style>
+  </head>
+
+  <body>
+	  <header>
+		  <div class="container">
+			  <a href="/" class="lang-switch">中文</a>
+			  <h1>Cloudflare DoH Service</h1>
+			  <p class="subtitle">A lightweight DNS over HTTPS (DoH) service</p>
+		  </div>
+	  </header>
+
+	  <div class="container">
+		  <section>
+			  <h2>Introduction</h2>
+			  <p>Cloudflare DoH Service is a lightweight service based on Cloudflare Workers that routes DNS queries to different DoH providers based on the request path while preserving original query parameters.</p>
+
+			  <h3>Key Features</h3>
+			  <ul>
+				  <li><strong>Path-based routing</strong>: Routes requests based on the URL path</li>
+				  <li><strong>Multi-provider support</strong>: Supports Google, Cloudflare, and other DoH providers</li>
+				  <li><strong>Custom configuration</strong>: Flexible routing rules via configuration file</li>
+				  <li><strong>Preserve query parameters</strong>: Fully preserves original request query parameters</li>
+				  <li><strong>Lightweight deployment</strong>: Based on Cloudflare Worker/Pages, no server maintenance needed</li>
+			  </ul>
+		  </section>
+
+		  <section>
+			  <h2>Usage</h2>
+			  <p>This service is deployed on Cloudflare. You can use the following addresses directly for DNS queries:</p>
+
+			  <h3>Using Google DoH</h3>
+			  <div class="example">
+				  <code>https://doh.example.com/google/query-dns?name=example.com</code>
+			  </div>
+
+			  <h3>Using Cloudflare DoH</h3>
+			  <div class="example">
+				  <code>https://doh.example.com/cloudflare/query-dns?name=example.com</code>
+			  </div>
+
+			  <h3>HTTP Request Example</h3>
+			  <pre><code>curl -H "accept: application/dns-json" "https://doh.example.com/google/query-dns?name=example.com&type=A"</code></pre>
+		  </section>
+
+		  <div class="grid">
+			  <section>
+				  <h2>Self-Hosted Deployment</h2>
+				  <p>You can deploy the DoH service using either of these methods:</p>
+
+				  <h3>Method 1: Using Cloudflare Workers</h3>
+				  <ol>
+					  <li>Log in to the <a href="https://dash.cloudflare.com/" target="_blank">Cloudflare Dashboard</a></li>
+					  <li>Go to Workers, click "Create a Service"</li>
+					  <li>Paste the project code into the editor</li>
+					  <li>Configure environment variables (optional)</li>
+					  <li>Click "Deploy"</li>
+				  </ol>
+
+				  <h3>Method 2: Using Cloudflare Pages</h3>
+				  <ol>
+					  <li>Push the project code to a Git repository</li>
+					  <li>Create a new project in Cloudflare Pages and connect it to your repository</li>
+					  <li>Complete basic configuration and deploy</li>
+				  </ol>
+
+				  <div class="github-link">
+					  <p>Get full deployment instructions:</p>
+					  <a href="https://github.com/jqknono/cloudflare-doh" class="btn" target="_blank">GitHub Repository</a>
+				  </div>
+			  </section>
+
+			  <section>
+				  <h2>Custom Configuration</h2>
+				  <p>You can customize path mapping rules by setting the <code>DOMAIN_MAPPINGS</code> environment variable:</p>
+
+				  <pre><code>{
+	"/google": {
+	  "targetDomain": "dns.google",
+	  "pathMapping": {
+		"/query-dns": "/dns-query"
+	  }
+	},
+	"/cloudflare": {
+	  "targetDomain": "one.one.one.one",
+	  "pathMapping": {
+		"/query-dns": "/dns-query"
+	  }
+	},
+	"/quad9": {
+	  "targetDomain": "dns.quad9.net",
+	  "pathMapping": {
+		"/query-dns": "/dns-query"
+	  }
+	}
+  }</code></pre>
+
+				  <p>Configuration notes:</p>
+				  <ul>
+					  <li>The key is the path prefix, e.g. <code>/google</code></li>
+					  <li><code>targetDomain</code> is the target domain</li>
+					  <li><code>pathMapping</code> defines path mapping rules</li>
+				  </ul>
+			  </section>
+		  </div>
+
+		  <section>
+			  <h2>Browser DoH Setup</h2>
+			  <p>Here's how to configure DNS over HTTPS (DoH) in different browsers:</p>
+
+			  <div class="card">
+				  <h3>Firefox Setup</h3>
+				  <ol>
+					  <li>Open Firefox and enter <code>about:preferences#general</code> in the address bar</li>
+					  <li>Scroll to the bottom and find "Network Settings"</li>
+					  <li>Click "Settings"</li>
+					  <li>Scroll down and check "Enable DNS over HTTPS"</li>
+					  <li>Select "Custom" and enter the following URL (using Google as an example):<br>
+						  <code>https://your-worker-domain.com/google/query-dns</code>
+					  </li>
+					  <li>Click "OK" to save</li>
+				  </ol>
+			  </div>
+
+			  <div class="card">
+				  <h3>Chrome Setup</h3>
+				  <ol>
+					  <li>Open Chrome and enter <code>chrome://settings/security</code> in the address bar</li>
+					  <li>Find the "Safe browsing and security" section</li>
+					  <li>Click "Use secure DNS"</li>
+					  <li>Select "Custom" and enter the following URL (using Cloudflare as an example):<br>
+						  <code>https://your-worker-domain.com/cloudflare/query-dns</code>
+					  </li>
+				  </ol>
+				  <p>Note: Chrome only allows predefined DoH providers or custom providers, but some versions may limit custom DoH support.</p>
+			  </div>
+
+			  <div class="card">
+				  <h3>Edge Setup</h3>
+				  <ol>
+					  <li>Open Edge and enter <code>edge://settings/privacy</code> in the address bar</li>
+					  <li>Scroll to the "Security" section</li>
+					  <li>Find "Use secure DNS to specify how to look up the network address for websites"</li>
+					  <li>Select "Custom" and enter the following URL (using Google as an example):<br>
+						  <code>https://your-worker-domain.com/google/query-dns</code>
+					  </li>
+				  </ol>
+			  </div>
+
+              <h2>Operating System Setup</h2>
+			  <div class="card">
+				  <h4>Windows 11 Setup</h4>
+				  <ol>
+					  <li>Open Settings &gt; Network & Internet &gt; Wi-Fi or Ethernet (depending on your connection type)</li>
+					  <li>Click your network connection</li>
+					  <li>Under "DNS server assignment", click "Edit"</li>
+					  <li>Set "IPv4 DNS server" to "Manual"</li>
+					  <li>Enable "DNS over HTTPS for IPv4"</li>
+					  <li>Enter the DoH provider's IP address in the "Preferred DNS" field</li>
+					  <li>Set "Preferred DoH mode" to "Custom" and enter your DoH URL:<br>
+						  <code>https://your-worker-domain.com/google/query-dns</code>
+					  </li>
+				  </ol>
+
+                  <h4>macOS/iOS Setup</h4>
+                  <ol>
+                      <li>Use tools like <a href="https://dns.notjakob.com/tool.html" target="_blank">DNS Profile Creator</a> to generate a DoH configuration profile</li>
+                      <li>Download the profile to your device</li>
+                      <li>On macOS:
+                          <ul>
+                              <li>Double-click the downloaded profile</li>
+                              <li>Find "Profiles" in System Settings</li>
+                              <li>Click "Install" and enter your admin password to confirm</li>
+                          </ul>
+                      </li>
+                      <li>On iOS:
+                          <ul>
+                              <li>Open the downloaded profile</li>
+                              <li>Tap the notification in the Settings app</li>
+                              <li>Tap "Install Profile"</li>
+                              <li>Enter your device passcode to confirm installation</li>
+                          </ul>
+                      </li>
+                      <li>After installation, your device will automatically use the configured DoH server</li>
+                  </ol>
+
+				  <h4>Android Setup</h4>
+				  <p>Android does not currently support DoH</p>
+			  </div>
+		  </section>
+
+
+		  
+		  <section>
+			  <h2>FAQ</h2>
+			  <div class="card">
+				  <h3>What is DNS over HTTPS (DoH)?</h3>
+				  <p>DoH is a protocol that encrypts DNS queries by sending them through HTTPS, preventing man-in-the-middle attacks and privacy leaks.</p>
+			  </div>
+			  <div class="card">
+				  <h3>Why is a DoH service needed?</h3>
+				  <p>A DoH service helps bypass network restrictions, provides a unified interface for multiple DoH providers, and allows quick switching between providers.</p>
+			  </div>
+			  <div class="card">
+				  <h3>Is it safe to use this service?</h3>
+				  <p>This service only routes requests and does not modify or store your DNS query content. However, note that your DNS queries are still processed by the target DoH service.</p>
+			  </div>
+			  <div class="card">
+				  <h3>What are the limits of the free tier?</h3>
+				  <p>The Cloudflare Workers free tier has a daily limit of 100,000 requests, sufficient for personal use but not suitable for large-scale deployments.</p>
+			  </div>
+		  </section>
+
+		  <div class="cta">
+			  <h2>Get Started</h2>
+			  <p>Deploy your own DoH service or start using ours directly</p>
+			  <a href="https://github.com/jqknono/cloudflare-doh" class="btn">Get the Code</a>
+		  </div>
+	  </div>
+
+	  <footer>
+		  <div class="container">
+			  <p>Cloudflare DoH Service &copy; 2023</p>
+			  <p>Open sourced under the MIT License</p>
+		  </div>
+	  </footer>
+  </body>
+
   </html>`;
 
 
@@ -427,10 +830,21 @@ function serveHomepage() {
 	});
 }
 
+function serveHomepageEn() {
+	return new Response(HOMEPAGE_HTML_EN, {
+		status: 200,
+		headers: { 'Content-Type': 'text/html; charset=utf-8' },
+	});
+}
+
 async function handleRequest(request) {
 	const url = new URL(request.url);
 	const path = url.pathname;
 	const queryString = url.search;
+
+	if (path === '/en') {
+		return serveHomepageEn();
+	}
 
 	if (path === '/index.html' || path === '/') {
 		return serveHomepage();

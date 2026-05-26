@@ -89,17 +89,4 @@ const DNS_UPSTREAMS = {
 
 本项目采用 [MIT 许可协议](LICENSE)。您可以自由地使用、修改和分发本代码，但需要在您的项目中包含原始许可证和版权声明。
 
-## 赞助商
-
-[宁屏去广告](https://www.nullprivate.com) - 可定制化个人 DNS 解析服务
-
-主要特性:
-
-- 智能广告及追踪器过滤
-- 内置DDNS 支持
-- 防沉迷配置
-- 支持按规则路由上游DNS
-
-详情请访问 [Null Private](https://www.nullprivate.com) 了解更多。
-
 
