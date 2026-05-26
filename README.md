@@ -26,41 +26,31 @@ Worker 内置了以下默认映射规则：
 
 ### 基础配置
 
-Worker 可以使用默认配置直接部署使用。
+Worker 内置了 Google 和 Cloudflare 的默认映射，可以不配置直接部署。
 
-### 自定义配置
+### 自定义上游（推荐）
 
-可以在 Cloudflare Workers 控制台中添加名为 `DOMAIN_MAPPINGS` 的环境变量来自定义路径映射规则。该变量接受符合以下格式的 JSON 字符串：
+在 Cloudflare 控制台的 `Settings → Variables` 中添加 `DNS_UPSTREAMS_` 前缀的变量，一条变量 = 一个上游：
 
-```json
-{
-	"/path-prefix": {
-		"targetDomain": "target.domain.com",
-		"pathMapping": {
-			"/source-path": "/target-path"
-		}
-	}
-}
-```
+| 变量名 | 变量值 |
+|---|---|
+| `DNS_UPSTREAMS_google` | `dns.google` |
+| `DNS_UPSTREAMS_cloudflare` | `one.one.one.one` |
+| `DNS_UPSTREAMS_quad9` | `dns.quad9.net` |
+| `DNS_UPSTREAMS_alidns` | `dns.alidns.com` |
 
-例如，若要添加对 Quad9 DoH 服务的支持，配置可能如下：
+设置后，对应的访问路径为 `/<变量名后缀>/query-dns`，例如 `/google/query-dns`、`/quad9/query-dns`。添加/删除上游就是加一条/删一条变量，无需 JSON，不会拼错。
+
+> **注意**：设置了 `DNS_UPSTREAMS_*` 变量后，默认的 Google/Cloudflare 映射会被替代。如需保留，请一并添加。
+
+### 旧版配置（兼容）
+
+如果已经在使用 `DOMAIN_MAPPINGS` 变量，Worker 会继续识别。格式如下：
 
 ```json
 {
 	"/google": {
 		"targetDomain": "dns.google",
-		"pathMapping": {
-			"/query-dns": "/dns-query"
-		}
-	},
-	"/cloudflare": {
-		"targetDomain": "one.one.one.one",
-		"pathMapping": {
-			"/query-dns": "/dns-query"
-		}
-	},
-	"/quad9": {
-		"targetDomain": "dns.quad9.net",
 		"pathMapping": {
 			"/query-dns": "/dns-query"
 		}

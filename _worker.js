@@ -425,26 +425,55 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   </html>`;
 
 /**
- * Get path mappings from Cloudflare Worker env or use defaults
+ * Build path mappings from DNS_UPSTREAMS_* environment variables.
+ * Example: DNS_UPSTREAMS_google = "dns.google"
+ *   → { '/google': { targetDomain: 'dns.google', pathMapping: { '/query-dns': '/dns-query' } } }
+ * This is the recommended simplified configuration format.
+ * @param {Object} env - Environment variables from Cloudflare Worker
+ * @returns {Object|null} Path mappings, or null if no DNS_UPSTREAMS_* vars found
+ */
+function buildFromDnsUpstreams(env) {
+	const prefix = 'DNS_UPSTREAMS_';
+	const mappings = {};
+	for (const key of Object.keys(env)) {
+		if (!key.startsWith(prefix)) continue;
+		const domain = env[key];
+		if (!domain || typeof domain !== 'string') continue;
+		const name = key.slice(prefix.length).toLowerCase();
+		mappings['/' + name] = {
+			targetDomain: domain.trim(),
+			pathMapping: { '/query-dns': '/dns-query' },
+		};
+	}
+	return Object.keys(mappings).length > 0 ? mappings : null;
+}
+
+/**
+ * Get path mappings from Cloudflare Worker env or use defaults.
+ * Priority: DNS_UPSTREAMS_* > DOMAIN_MAPPINGS (legacy) > built-in defaults
  * @param {Object} env - Environment variables from Cloudflare Worker
  * @returns {Object} Path mappings configuration
  */
 function getPathMappings(env) {
-	try {
-		// Check if DOMAIN_MAPPINGS is defined in the env object
-		if (env && env.DOMAIN_MAPPINGS) {
-			// If it's a string, try to parse it as JSON
-			if (typeof env.DOMAIN_MAPPINGS === 'string') {
-				return JSON.parse(env.DOMAIN_MAPPINGS);
+	if (env) {
+		// Priority 1: DNS_UPSTREAMS_* variables (simplified format, recommended)
+		const upstreamMappings = buildFromDnsUpstreams(env);
+		if (upstreamMappings) return upstreamMappings;
+
+		// Priority 2: DOMAIN_MAPPINGS variable (legacy nested JSON format)
+		try {
+			if (env.DOMAIN_MAPPINGS) {
+				if (typeof env.DOMAIN_MAPPINGS === 'string') {
+					return JSON.parse(env.DOMAIN_MAPPINGS);
+				}
+				return env.DOMAIN_MAPPINGS;
 			}
-			// If it's already an object, use it directly
-			return env.DOMAIN_MAPPINGS;
+		} catch (error) {
+			console.error('Error parsing DOMAIN_MAPPINGS:', error);
 		}
-	} catch (error) {
-		console.error('Error accessing DOMAIN_MAPPINGS variable:', error);
 	}
 
-	// Fall back to default mappings if the variable is not set
+	// Priority 3: built-in defaults
 	return DEFAULT_PATH_MAPPINGS;
 }
 
