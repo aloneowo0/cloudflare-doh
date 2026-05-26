@@ -1,25 +1,15 @@
 /**
- * Cloudflare Worker that forwards requests based on path instead of subdomain
- * Example: doh.example.com/google/query-dns → dns.google/dns-query
- * Supports configuration via Cloudflare Worker variables
+ * Cloudflare Worker DoH Forwarding Proxy
+ * Fork this file and edit DNS_UPSTREAMS below to add/remove providers.
  */
 
-// Default configuration for path mappings
-const DEFAULT_PATH_MAPPINGS = {
-	'/google': {
-		targetDomain: 'dns.google',
-		pathMapping: {
-			'/query-dns': '/dns-query',
-		},
-	},
-	'/cloudflare': {
-		targetDomain: 'one.one.one.one',
-		pathMapping: {
-			'/query-dns': '/dns-query',
-		},
-	},
-	// Add more path mappings as needed
+// ====== DNS Upstream Configuration ======
+// Format: { '/path-prefix': 'https://doh-provider.com/dns-query' }
+const DNS_UPSTREAMS = {
+	'/google': 'https://dns.google/dns-query',
+	'/cloudflare': 'https://cloudflare-dns.com/dns-query',
 };
+// =======================================
 
 const HOMEPAGE_HTML = `<!DOCTYPE html>
   <html lang="zh-CN">
@@ -424,55 +414,6 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   
   </html>`;
 
-/**
- * Build path mappings from DNS_UPSTREAMS_* environment variables.
- * Values must be full DoH URLs:
- *   DNS_UPSTREAMS_quad9 = "https://dns.quad9.net/dns-query"
- * Supports non-standard endpoints with arbitrary paths.
- * @param {Object} env - Environment variables from Cloudflare Worker
- * @returns {Object|null} Path mappings, or null if no DNS_UPSTREAMS_* vars found
- */
-function buildFromDnsUpstreams(env) {
-	const prefix = 'DNS_UPSTREAMS_';
-	const mappings = {};
-	for (const key of Object.keys(env)) {
-		if (!key.startsWith(prefix)) continue;
-		const value = env[key];
-		if (!value || typeof value !== 'string') continue;
-		const name = key.slice(prefix.length).toLowerCase();
-		mappings['/' + name] = { baseUrl: value.trim() };
-	}
-	return Object.keys(mappings).length > 0 ? mappings : null;
-}
-
-/**
- * Get path mappings from Cloudflare Worker env or use defaults.
- * Priority: DNS_UPSTREAMS_* > DOMAIN_MAPPINGS (legacy) > built-in defaults
- * @param {Object} env - Environment variables from Cloudflare Worker
- * @returns {Object} Path mappings configuration
- */
-function getPathMappings(env) {
-	if (env) {
-		// Priority 1: DNS_UPSTREAMS_* variables (simplified format, recommended)
-		const upstreamMappings = buildFromDnsUpstreams(env);
-		if (upstreamMappings) return upstreamMappings;
-
-		// Priority 2: DOMAIN_MAPPINGS variable (legacy nested JSON format)
-		try {
-			if (env.DOMAIN_MAPPINGS) {
-				if (typeof env.DOMAIN_MAPPINGS === 'string') {
-					return JSON.parse(env.DOMAIN_MAPPINGS);
-				}
-				return env.DOMAIN_MAPPINGS;
-			}
-		} catch (error) {
-			console.error('Error parsing DOMAIN_MAPPINGS:', error);
-		}
-	}
-
-	// Priority 3: built-in defaults
-	return DEFAULT_PATH_MAPPINGS;
-}
 
 function serveHomepage() {
 	// 直接返回内联的HTML内容，不再需要尝试从外部加载
@@ -482,48 +423,19 @@ function serveHomepage() {
 	});
 }
 
-async function handleRequest(request, env) {
+async function handleRequest(request) {
 	const url = new URL(request.url);
 	const path = url.pathname;
-	const queryString = url.search; // Preserves the query string with the '?'
+	const queryString = url.search;
 
-	// If the path is explicitly '/index.html' or '/', serve the homepage
 	if (path === '/index.html' || path === '/') {
 		return serveHomepage();
 	}
 
-	// Get the path mappings from env or defaults
-	const pathMappings = getPathMappings(env);
-
-	// Find the matching path prefix
-	const pathPrefix = Object.keys(pathMappings).find((prefix) => path.startsWith(prefix));
+	const pathPrefix = Object.keys(DNS_UPSTREAMS).find((prefix) => path.startsWith(prefix));
 
 	if (pathPrefix) {
-		const mapping = pathMappings[pathPrefix];
-
-		// New format (DNS_UPSTREAMS_*): baseUrl is the full DoH endpoint
-		if (mapping.baseUrl) {
-			const newUrl = mapping.baseUrl + queryString;
-			const newRequest = new Request(newUrl, {
-				method: request.method,
-				headers: request.headers,
-				body: request.body,
-				redirect: 'follow',
-			});
-			return fetch(newRequest);
-		}
-
-		// Legacy format (DOMAIN_MAPPINGS / defaults)
-		const targetDomain = mapping.targetDomain;
-		const remainingPath = path.substring(pathPrefix.length);
-		let targetPath = remainingPath;
-		for (const [sourcePath, destPath] of Object.entries(mapping.pathMapping)) {
-			if (remainingPath.startsWith(sourcePath)) {
-				targetPath = remainingPath.replace(sourcePath, destPath);
-				break;
-			}
-		}
-		const newUrl = `https://${targetDomain}${targetPath}${queryString}`;
+		const newUrl = DNS_UPSTREAMS[pathPrefix] + queryString;
 		const newRequest = new Request(newUrl, {
 			method: request.method,
 			headers: request.headers,
@@ -533,13 +445,11 @@ async function handleRequest(request, env) {
 		return fetch(newRequest);
 	}
 
-	// If no mapping is found, serve the homepage instead of 404
 	return serveHomepage();
 }
 
-// Export the worker
 export default {
-	async fetch(request, env, ctx) {
-		return handleRequest(request, env);
+	async fetch(request) {
+		return handleRequest(request);
 	},
 };
