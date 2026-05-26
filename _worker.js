@@ -266,7 +266,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 					  <li>登录到 <a href="https://dash.cloudflare.com/" target="_blank">Cloudflare 控制台</a></li>
 					  <li>进入 Workers 部分并点击"创建服务"</li>
 					  <li>将项目代码粘贴到编辑器中</li>
-					  <li>配置环境变量（可选）</li>
+					  <li>编辑 _worker.js 顶部的 DNS_UPSTREAMS 添加自定义上游</li>
 					  <li>点击"部署"按钮</li>
 				  </ol>
   
@@ -551,7 +551,6 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 		  }
 
 
-		  
 		  .cta {
 			  text-align: center;
 			  margin: 2rem 0;
@@ -682,7 +681,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 					  <li>Log in to the <a href="https://dash.cloudflare.com/" target="_blank">Cloudflare Dashboard</a></li>
 					  <li>Go to Workers, click "Create a Service"</li>
 					  <li>Paste the project code into the editor</li>
-					  <li>Configure environment variables (optional)</li>
+					  <li>Edit DNS_UPSTREAMS at the top of _worker.js to add custom upstreams</li>
 					  <li>Click "Deploy"</li>
 				  </ol>
 
