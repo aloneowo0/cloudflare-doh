@@ -1,6 +1,6 @@
 /**
- * Cloudflare Worker DoH Forwarding Proxy
- * Fork this file and edit DNS_UPSTREAMS below to add/remove providers.
+ * Cloudflare Worker DoH Service
+ * Edit DNS_UPSTREAMS below to add/remove providers.
  */
 
 // ====== DNS Upstream Configuration ======
@@ -17,7 +17,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   <head>
 	  <meta charset="UTF-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <title>Cloudflare DoH 转发代理 - 简单高效的 DNS over HTTPS 代理服务</title>
+	  <title>Cloudflare DoH 服务 - 简单高效的 DNS over HTTPS 服务</title>
 	  <style>
 		  :root {
 			  --primary-color: #f6821f;
@@ -177,21 +177,21 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   <body>
 	  <header>
 		  <div class="container">
-			  <h1>Cloudflare DoH 转发代理</h1>
-			  <p class="subtitle">一个轻量级的 DNS over HTTPS (DoH) 转发代理服务</p>
+			  <h1>Cloudflare DoH 服务</h1>
+			  <p class="subtitle">一个轻量级的 DNS over HTTPS (DoH) 服务</p>
 		  </div>
 	  </header>
   
 	  <div class="container">
 		  <section>
 			  <h2>项目介绍</h2>
-			  <p>Cloudflare DoH 转发代理是一个基于 Cloudflare Workers 的轻量级服务，能够根据请求路径将 DNS 查询转发到不同的 DoH 服务提供商，同时保留原始查询参数。</p>
+			  <p>Cloudflare DoH 服务是一个基于 Cloudflare Workers 的轻量级服务，能够根据请求路径将 DNS 查询路由到不同的 DoH 服务提供商，同时保留原始查询参数。</p>
   
 			  <h3>主要功能</h3>
 			  <ul>
-				  <li><strong>基于路径的转发</strong>：根据请求路径确定转发目标</li>
+				  <li><strong>基于路径的路由</strong>：根据请求路径确定路由目标</li>
 				  <li><strong>多提供商支持</strong>：支持 Google、Cloudflare 等多家 DoH 服务提供商</li>
-				  <li><strong>自定义配置</strong>：通过环境变量灵活配置转发规则</li>
+				  <li><strong>自定义配置</strong>：通过编辑配置文件灵活配置路由规则</li>
 				  <li><strong>保留查询参数</strong>：完整保留原始请求中的查询参数</li>
 				  <li><strong>轻量级部署</strong>：基于 Cloudflare Worker/Pages，无需维护服务器</li>
 			  </ul>
@@ -201,24 +201,24 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 			  <h2>使用方法</h2>
 			  <p>本服务已部署到 Cloudflare，您可以直接使用以下地址进行 DNS 查询：</p>
   
-			  <h3>转发到 Google DoH 服务</h3>
+			  <h3>使用 Google DoH 服务</h3>
 			  <div class="example">
-				  <code>https://doh-proxy.example.com/google/query-dns?name=example.com</code>
+				  <code>https://doh.example.com/google/query-dns?name=example.com</code>
 			  </div>
   
-			  <h3>转发到 Cloudflare DoH 服务</h3>
+			  <h3>使用 Cloudflare DoH 服务</h3>
 			  <div class="example">
-				  <code>https://doh-proxy.example.com/cloudflare/query-dns?name=example.com</code>
+				  <code>https://doh.example.com/cloudflare/query-dns?name=example.com</code>
 			  </div>
   
 			  <h3>HTTP 请求示例</h3>
-			  <pre><code>curl -H "accept: application/dns-json" "https://doh-proxy.example.com/google/query-dns?name=example.com&type=A"</code></pre>
+			  <pre><code>curl -H "accept: application/dns-json" "https://doh.example.com/google/query-dns?name=example.com&type=A"</code></pre>
 		  </section>
   
 		  <div class="grid">
 			  <section>
 				  <h2>自托管部署</h2>
-				  <p>您可以使用以下两种方法部署自己的 DoH 转发代理：</p>
+				  <p>您可以使用以下两种方法部署 DoH 服务：</p>
   
 				  <h3>方法一：使用 Cloudflare Workers</h3>
 				  <ol>
@@ -384,12 +384,12 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 				  <p>DoH 是一种加密 DNS 查询的协议，它通过 HTTPS 协议发送 DNS 查询，防止中间人攻击和隐私泄露。</p>
 			  </div>
 			  <div class="card">
-				  <h3>为什么需要 DoH 转发代理？</h3>
-				  <p>DoH 转发代理可以帮助绕过网络限制、提供统一的接口调用多个 DoH 服务提供商，并在提供商之间快速切换。</p>
+				  <h3>为什么需要 DoH 服务？</h3>
+				  <p>DoH 服务可以帮助绕过网络限制、提供统一的接口调用多个 DoH 服务提供商，并在提供商之间快速切换。</p>
 			  </div>
 			  <div class="card">
 				  <h3>使用此服务是否安全？</h3>
-				  <p>本服务仅转发请求，不会修改或存储您的 DNS 查询内容。但请注意，您的 DNS 查询内容仍会被目标 DoH 提供商处理。</p>
+				  <p>本服务仅路由请求，不会修改或存储您的 DNS 查询内容。但请注意，您的 DNS 查询仍由目标 DoH 服务处理。</p>
 			  </div>
 			  <div class="card">
 				  <h3>免费版有什么限制？</h3>
@@ -399,14 +399,14 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   
 		  <div class="cta">
 			  <h2>开始使用</h2>
-			  <p>立即部署您自己的 DoH 转发代理，或直接使用我们的服务</p>
+			  <p>开始部署你的 DoH 服务，或直接使用我们的服务</p>
 			  <a href="https://github.com/jqknono/cloudflare-doh" class="btn">获取代码</a>
 		  </div>
 	  </div>
   
 	  <footer>
 		  <div class="container">
-			  <p>Cloudflare DoH 转发代理 &copy; 2023</p>
+			  <p>Cloudflare DoH 服务 &copy; 2023</p>
 			  <p>基于 MIT 许可协议开源</p>
 		  </div>
 	  </footer>

@@ -1,19 +1,19 @@
-# Cloudflare DoH 转发代理
+# Cloudflare DoH 服务
 
 ![使用演示](https://i.imgur.com/hu6F10P.gif)
 
-这是一个基于 Cloudflare Workers 的 DNS over HTTPS (DoH) 转发代理服务。本服务可以根据路径将请求转发到不同的 DoH 提供商，同时保留查询参数。
+这是一个基于 Cloudflare Workers 的 DNS over HTTPS (DoH) 服务服务。本服务可以根据路径将请求路由到不同的 DoH 提供商，同时保留查询参数。
 
 ## 功能特点
 
-- 基于路径的请求转发：根据请求路径将请求转发到对应的 DoH 服务提供商
+- 基于路径的请求路由：根据请求路径将请求路由到对应的 DoH 服务提供商
 - 自定义路径映射：可以通过 Cloudflare Worker 的环境变量配置路径映射
-- 保留查询参数：转发时会保留原始请求中的查询参数
+- 保留查询参数：路由时会保留原始请求中的查询参数
 - 轻量级实现：简单高效的实现方式，易于部署和维护
 
 ## 工作原理
 
-该 Worker 根据请求的路径前缀确定转发目标，然后将请求转发到相应的 DoH 服务提供商。例如，当访问 `doh.example.com/google/query-dns?name=example.com` 时，该请求会被转发到 `dns.google/dns-query?name=example.com`。
+该 Worker 根据请求的路径前缀确定路由目标，然后将请求路由到相应的 DoH 服务提供商。例如，当访问 `doh.example.com/google/query-dns?name=example.com` 时，该请求会被路由到 `dns.google/dns-query?name=example.com`。
 
 ### 默认路径映射
 
@@ -65,26 +65,26 @@ const DNS_UPSTREAMS = {
 
 ## 使用示例
 
-假设您已将此 Worker 部署到 `doh-proxy.workers.dev`，您可以通过以下方式使用：
+假设您已将此 Worker 部署到 `doh-service.workers.dev`，您可以通过以下方式使用：
 
 - 使用 Google 的 DoH 服务：
 
   ```
-  https://doh-proxy.workers.dev/google/query-dns?name=example.com
+  https://doh-service.workers.dev/google/query-dns?name=example.com
   ```
 
 - 使用 Cloudflare 的 DoH 服务：
   ```
-  https://doh-proxy.workers.dev/cloudflare/query-dns?name=example.com
+  https://doh-service.workers.dev/cloudflare/query-dns?name=example.com
   ```
 
 ## 注意事项
 
-- 该服务仅转发请求，不会修改或存储您的 DNS 查询内容
+- 该服务仅路由请求，不会修改或存储您的 DNS 查询内容
 - 请确保遵守各 DoH 服务提供商的使用政策
 - 此服务适合个人或小规模使用，对于大规模部署，请考虑各提供商的使用限制
 - Cloudflare 免费版用户每日的免费请求数量为 **10w** 次, 仅够个人使用, 注意避免暴漏 DoH 连接
-<!-- 似乎代理已无法关闭 - 关闭 Cloudflare 代理可以大幅降低延迟, DoH 服务通常不需要代理 -->
+<!-- 似乎CF 代理已无法关闭 - 关闭 Cloudflare 代理可以大幅降低延迟, DoH 服务通常不需要代理 -->
 
 ## 许可协议
 
