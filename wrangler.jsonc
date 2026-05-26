@@ -28,8 +28,8 @@
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 	 */
 	"vars": {
-		"DNS_UPSTREAMS_google": "dns.google",
-		"DNS_UPSTREAMS_cloudflare": "one.one.one.one"
+		"DNS_UPSTREAMS_google": "https://dns.google/dns-query",
+		"DNS_UPSTREAMS_cloudflare": "https://cloudflare-dns.com/dns-query"
 	},
 	/**
 	 * Note: Use secrets to store sensitive data.

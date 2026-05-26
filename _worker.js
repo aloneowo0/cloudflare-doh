@@ -426,9 +426,9 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 
 /**
  * Build path mappings from DNS_UPSTREAMS_* environment variables.
- * Example: DNS_UPSTREAMS_google = "dns.google"
- *   → { '/google': { targetDomain: 'dns.google', pathMapping: { '/query-dns': '/dns-query' } } }
- * This is the recommended simplified configuration format.
+ * Values must be full DoH URLs:
+ *   DNS_UPSTREAMS_quad9 = "https://dns.quad9.net/dns-query"
+ * Supports non-standard endpoints with arbitrary paths.
  * @param {Object} env - Environment variables from Cloudflare Worker
  * @returns {Object|null} Path mappings, or null if no DNS_UPSTREAMS_* vars found
  */
@@ -437,13 +437,10 @@ function buildFromDnsUpstreams(env) {
 	const mappings = {};
 	for (const key of Object.keys(env)) {
 		if (!key.startsWith(prefix)) continue;
-		const domain = env[key];
-		if (!domain || typeof domain !== 'string') continue;
+		const value = env[key];
+		if (!value || typeof value !== 'string') continue;
 		const name = key.slice(prefix.length).toLowerCase();
-		mappings['/' + name] = {
-			targetDomain: domain.trim(),
-			pathMapping: { '/query-dns': '/dns-query' },
-		};
+		mappings['/' + name] = { baseUrl: value.trim() };
 	}
 	return Object.keys(mappings).length > 0 ? mappings : null;
 }
@@ -503,12 +500,22 @@ async function handleRequest(request, env) {
 
 	if (pathPrefix) {
 		const mapping = pathMappings[pathPrefix];
+
+		// New format (DNS_UPSTREAMS_*): baseUrl is the full DoH endpoint
+		if (mapping.baseUrl) {
+			const newUrl = mapping.baseUrl + queryString;
+			const newRequest = new Request(newUrl, {
+				method: request.method,
+				headers: request.headers,
+				body: request.body,
+				redirect: 'follow',
+			});
+			return fetch(newRequest);
+		}
+
+		// Legacy format (DOMAIN_MAPPINGS / defaults)
 		const targetDomain = mapping.targetDomain;
-
-		// Remove the prefix from the path
 		const remainingPath = path.substring(pathPrefix.length);
-
-		// Check if we have a specific path mapping for the remaining path
 		let targetPath = remainingPath;
 		for (const [sourcePath, destPath] of Object.entries(mapping.pathMapping)) {
 			if (remainingPath.startsWith(sourcePath)) {
@@ -516,19 +523,13 @@ async function handleRequest(request, env) {
 				break;
 			}
 		}
-
-		// Construct the new URL with the preserved query string
 		const newUrl = `https://${targetDomain}${targetPath}${queryString}`;
-
-		// Clone the original request
 		const newRequest = new Request(newUrl, {
 			method: request.method,
 			headers: request.headers,
 			body: request.body,
 			redirect: 'follow',
 		});
-
-		// Forward the request to the target domain
 		return fetch(newRequest);
 	}
 
