@@ -11,8 +11,6 @@ const DNS_UPSTREAMS = {
 	'/quad9':      'https://dns11.quad9.net/dns-query',
 	'/adguard':    'https://dns.adguard-dns.com/dns-query',
 	// ECS 可选：
-	// '/alidns':     'https://dns.alidns.com/dns-query',
-	// '/dohpub':     'https://doh.pub/dns-query',
 	// '/opendns':    'https://dns.opendns.com/dns-query',
 };
 // =======================================
