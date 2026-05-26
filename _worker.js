@@ -221,16 +221,16 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   
 			  <h3>使用 Google DoH 服务</h3>
 			  <div class="example">
-				  <code>https://doh.example.com/google/query-dns?name=example.com</code>
+				  <code>https://__HOST__/google/query-dns?name=example.com</code>
 			  </div>
   
 			  <h3>使用 Cloudflare DoH 服务</h3>
 			  <div class="example">
-				  <code>https://doh.example.com/cloudflare/query-dns?name=example.com</code>
+				  <code>https://__HOST__/cloudflare/query-dns?name=example.com</code>
 			  </div>
   
 			  <h3>HTTP 请求示例</h3>
-			  <pre><code>curl -H "accept: application/dns-json" "https://doh.example.com/google/query-dns?name=example.com&type=A"</code></pre>
+			  <pre><code>curl -H "accept: application/dns-json" "https://__HOST__/google/query-dns?name=example.com&type=A"</code></pre>
 		  </section>
   
 		  <div class="grid">
@@ -306,7 +306,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 					  <li>点击"设置"按钮</li>
 					  <li>滚动到底部，勾选"启用基于 HTTPS 的 DNS"</li>
 					  <li>选择"自定义"选项，并输入以下 URL（以 Google 为例）：<br>
-						  <code>https://your-worker-domain.com/google/query-dns</code>
+						  <code>https://__HOST__/google/query-dns</code>
 					  </li>
 					  <li>点击"确定"保存设置</li>
 				  </ol>
@@ -319,7 +319,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 					  <li>找到"安全浏览和安全"部分</li>
 					  <li>点击"使用安全 DNS 服务"</li>
 					  <li>选择"自定义"选项，并输入以下 URL（以 Cloudflare 为例）：<br>
-						  <code>https://your-worker-domain.com/cloudflare/query-dns</code>
+						  <code>https://__HOST__/cloudflare/query-dns</code>
 					  </li>
 				  </ol>
 				  <p>注意：Chrome 只允许使用预定义的 DoH 提供商或自定义提供商，但有些版本可能限制对自定义 DoH 服务的支持。</p>
@@ -332,7 +332,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 					  <li>滚动到"安全"部分</li>
 					  <li>找到"使用安全 DNS 服务指定如何查找网站的网络地址"</li>
 					  <li>选择"自定义"选项，并输入以下 URL（以 Google 为例）：<br>
-						  <code>https://your-worker-domain.com/google/query-dns</code>
+						  <code>https://__HOST__/google/query-dns</code>
 					  </li>
 				  </ol>
 			  </div>
@@ -348,7 +348,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 					  <li>开启"IPv4 的 DNS over HTTPS"</li>
 					  <li>在"首选 DNS"字段输入 DoH 提供商的 IP 地址</li>
 					  <li>在"首选 DoH 模式"下拉菜单中选择"自定义"并输入您的 DoH URL：<br>
-						  <code>https://your-worker-domain.com/google/query-dns</code>
+						  <code>https://__HOST__/google/query-dns</code>
 					  </li>
 				  </ol>
   
@@ -624,16 +624,16 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 
 			  <h3>Using Google DoH</h3>
 			  <div class="example">
-				  <code>https://doh.example.com/google/query-dns?name=example.com</code>
+				  <code>https://__HOST__/google/query-dns?name=example.com</code>
 			  </div>
 
 			  <h3>Using Cloudflare DoH</h3>
 			  <div class="example">
-				  <code>https://doh.example.com/cloudflare/query-dns?name=example.com</code>
+				  <code>https://__HOST__/cloudflare/query-dns?name=example.com</code>
 			  </div>
 
 			  <h3>HTTP Request Example</h3>
-			  <pre><code>curl -H "accept: application/dns-json" "https://doh.example.com/google/query-dns?name=example.com&type=A"</code></pre>
+			  <pre><code>curl -H "accept: application/dns-json" "https://__HOST__/google/query-dns?name=example.com&type=A"</code></pre>
 		  </section>
 
 		  <div class="grid">
@@ -709,7 +709,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 					  <li>Click "Settings"</li>
 					  <li>Scroll down and check "Enable DNS over HTTPS"</li>
 					  <li>Select "Custom" and enter the following URL (using Google as an example):<br>
-						  <code>https://your-worker-domain.com/google/query-dns</code>
+						  <code>https://__HOST__/google/query-dns</code>
 					  </li>
 					  <li>Click "OK" to save</li>
 				  </ol>
@@ -722,7 +722,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 					  <li>Find the "Safe browsing and security" section</li>
 					  <li>Click "Use secure DNS"</li>
 					  <li>Select "Custom" and enter the following URL (using Cloudflare as an example):<br>
-						  <code>https://your-worker-domain.com/cloudflare/query-dns</code>
+						  <code>https://__HOST__/cloudflare/query-dns</code>
 					  </li>
 				  </ol>
 				  <p>Note: Chrome only allows predefined DoH providers or custom providers, but some versions may limit custom DoH support.</p>
@@ -735,7 +735,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 					  <li>Scroll to the "Security" section</li>
 					  <li>Find "Use secure DNS to specify how to look up the network address for websites"</li>
 					  <li>Select "Custom" and enter the following URL (using Google as an example):<br>
-						  <code>https://your-worker-domain.com/google/query-dns</code>
+						  <code>https://__HOST__/google/query-dns</code>
 					  </li>
 				  </ol>
 			  </div>
@@ -751,7 +751,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 					  <li>Enable "DNS over HTTPS for IPv4"</li>
 					  <li>Enter the DoH provider's IP address in the "Preferred DNS" field</li>
 					  <li>Set "Preferred DoH mode" to "Custom" and enter your DoH URL:<br>
-						  <code>https://your-worker-domain.com/google/query-dns</code>
+						  <code>https://__HOST__/google/query-dns</code>
 					  </li>
 				  </ol>
 
@@ -822,16 +822,17 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
   </html>`;
 
 
-function serveHomepage() {
-	// 直接返回内联的HTML内容，不再需要尝试从外部加载
-	return new Response(HOMEPAGE_HTML, {
+function serveHomepage(request) {
+	const html = HOMEPAGE_HTML.replaceAll('__HOST__', new URL(request.url).host);
+	return new Response(html, {
 		status: 200,
 		headers: { 'Content-Type': 'text/html; charset=utf-8' },
 	});
 }
 
-function serveHomepageEn() {
-	return new Response(HOMEPAGE_HTML_EN, {
+function serveHomepageEn(request) {
+	const html = HOMEPAGE_HTML_EN.replaceAll('__HOST__', new URL(request.url).host);
+	return new Response(html, {
 		status: 200,
 		headers: { 'Content-Type': 'text/html; charset=utf-8' },
 	});
@@ -843,11 +844,11 @@ async function handleRequest(request) {
 	const queryString = url.search;
 
 	if (path === '/en') {
-		return serveHomepageEn();
+		return serveHomepageEn(request);
 	}
 
 	if (path === '/index.html' || path === '/') {
-		return serveHomepage();
+		return serveHomepage(request);
 	}
 
 	const pathPrefix = Object.keys(DNS_UPSTREAMS).find((prefix) => path.startsWith(prefix));
@@ -863,7 +864,7 @@ async function handleRequest(request) {
 		return fetch(newRequest);
 	}
 
-	return serveHomepage();
+	return serveHomepage(request);
 }
 
 export default {
