@@ -20,9 +20,6 @@ const DNS_UPSTREAMS = {
 // Set to true to inject client IP into DNS queries sent to this upstream
 const ECS_ENABLED = {
 	'/google':  true,
-	'/quad9':   true,
-	'/adguard': true,
-	'/opendns': true,
 };
 // ==========================================
 
