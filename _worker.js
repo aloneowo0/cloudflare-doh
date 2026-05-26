@@ -935,7 +935,7 @@ function injectECS(body, clientIP) {
 
 	// No OPT record — append one with ECS
 	const parts = clientIP.split('.');
-	const optLen = 23; // NAME(1)+TYPE(2)+CLASS(2)+TTL(4)+RDLENGTH(2)+ECS(12)
+	const optLen = 23; // OPT header(11) + ECS option(12)
 	const newData = new Uint8Array(data.length + optLen);
 	newData.set(data);
 	const pos = data.length;
@@ -944,12 +944,12 @@ function injectECS(body, clientIP) {
 	newData[pos + 3] = 0x12; newData[pos + 4] = 0x34; // CLASS: 4096
 	newData[pos + 5] = 0; newData[pos + 6] = 0; newData[pos + 7] = 0; newData[pos + 8] = 0; // TTL
 	newData[pos + 9] = 0; newData[pos + 10] = 12; // RDLENGTH
-	// ECS option
+	// ECS option (RFC 7871)
 	newData[pos + 11] = 0; newData[pos + 12] = 8; // CODE=8
 	newData[pos + 13] = 0; newData[pos + 14] = 8; // LEN=8
 	newData[pos + 15] = 0; newData[pos + 16] = 1; // FAMILY=IPv4
-	newData[pos + 17] = 24; // PREFIX
-	newData[pos + 18] = 0; // SCOPE
+	newData[pos + 17] = 24; // SOURCE PREFIX
+	newData[pos + 18] = 0; // SCOPE PREFIX
 	for (let j = 0; j < 4; j++) newData[pos + 19 + j] = parseInt(parts[j]);
 
 	newData[10] = (arcount + 1) >> 8;
