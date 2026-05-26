@@ -188,6 +188,9 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 				  grid-template-columns: 1fr;
 			  }
 		  }
+		  #targets label { margin-right: 16px; cursor: pointer; }
+		  #results table { margin-top: 12px; border-collapse: collapse; width: 100%; max-width: 400px; }
+		  #results td, #results th { padding: 6px 12px; border-bottom: 1px solid #eee; text-align: left; }
 	  </style>
   </head>
   
@@ -216,7 +219,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 		  </section>
    
 		  <section>
-			  <h2>已启用端点</h2>
+			  <h2>可用端点</h2>
 			  <p>__UPSTREAM_LIST__</p>
 		  </section>
    
@@ -266,36 +269,13 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 			  </section>
   
 			  <section>
-				  <h2>自定义配置</h2>
-				  <p>您可以通过设置环境变量 <code>DOMAIN_MAPPINGS</code> 来自定义路径映射规则：</p>
-  
-				  <pre><code>{
-	"/google": {
-	  "targetDomain": "dns.google",
-	  "pathMapping": {
-		"/query-dns": "/dns-query"
-	  }
-	},
-	"/cloudflare": {
-	  "targetDomain": "one.one.one.one",
-	  "pathMapping": {
-		"/query-dns": "/dns-query"
-	  }
-	},
-	"/quad9": {
-	  "targetDomain": "dns.quad9.net",
-	  "pathMapping": {
-		"/query-dns": "/dns-query"
-	  }
-	}
-  }</code></pre>
-  
-				  <p>配置说明：</p>
-				  <ul>
-					  <li>键名为路径前缀，如 <code>/google</code></li>
-					  <li><code>targetDomain</code> 为目标域名</li>
-					  <li><code>pathMapping</code> 定义路径映射规则</li>
-				  </ul>
+				  <h2>延迟检测</h2>
+				  <p>选择要测试的端点，点击开始检测即可测速：</p>
+				  <div id="targets">__UPSTREAM_CHECKBOXES__</div>
+				  <p><button onclick="runLatencyTest()" style="padding:8px 20px;cursor:pointer">开始检测</button></p>
+				  <div id="results" style="display:none">
+					  <table><thead><tr><th>端点</th><th>延迟</th><th>状态</th></tr></thead><tbody></tbody></table>
+				  </div>
 			  </section>
 		  </div>
   
@@ -419,7 +399,33 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 			  <p>基于 MIT 许可协议开源</p>
 		  </div>
 	  </footer>
-  </body>
+  <script>
+const FIXED_QUERY = 'AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=';
+async function runLatencyTest() {
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  const tbody = results.querySelector('tbody');
+  tbody.innerHTML = '';
+  const checks = document.querySelectorAll('#targets input:checked');
+  if (!checks.length) { tbody.innerHTML = '<tr><td colspan=3>未选择端点</td></tr>'; return; }
+  const tasks = [...checks].map(async cb => {
+    const name = cb.value;
+    const row = tbody.insertRow();
+    row.innerHTML = '<td><strong>' + name + '</strong></td><td>...</td><td>...</td>';
+    const start = performance.now();
+    try {
+      const res = await fetch('/' + name + '/query-dns?dns=' + FIXED_QUERY);
+      row.cells[1].textContent = (performance.now() - start).toFixed(0) + 'ms';
+      row.cells[2].textContent = res.ok ? '\u2705' : '\u274C ' + res.status;
+    } catch(e) {
+      row.cells[1].textContent = '-';
+      row.cells[2].textContent = '\u274C';
+    }
+  });
+  await Promise.all(tasks);
+}
+</script>
+</body>
   
    </html>`;
 
@@ -596,6 +602,9 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 				  grid-template-columns: 1fr;
 			  }
 		  }
+		  #targets label { margin-right: 16px; cursor: pointer; }
+		  #results table { margin-top: 12px; border-collapse: collapse; width: 100%; max-width: 400px; }
+		  #results td, #results th { padding: 6px 12px; border-bottom: 1px solid #eee; text-align: left; }
 	  </style>
   </head>
 
@@ -624,7 +633,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 		  </section>
    
 		  <section>
-			  <h2>Enabled Endpoints</h2>
+			  <h2>Available Endpoints</h2>
 			  <p>__UPSTREAM_LIST__</p>
 		  </section>
    
@@ -674,36 +683,13 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 			  </section>
 
 			  <section>
-				  <h2>Custom Configuration</h2>
-				  <p>You can customize path mapping rules by setting the <code>DOMAIN_MAPPINGS</code> environment variable:</p>
-
-				  <pre><code>{
-	"/google": {
-	  "targetDomain": "dns.google",
-	  "pathMapping": {
-		"/query-dns": "/dns-query"
-	  }
-	},
-	"/cloudflare": {
-	  "targetDomain": "one.one.one.one",
-	  "pathMapping": {
-		"/query-dns": "/dns-query"
-	  }
-	},
-	"/quad9": {
-	  "targetDomain": "dns.quad9.net",
-	  "pathMapping": {
-		"/query-dns": "/dns-query"
-	  }
-	}
-  }</code></pre>
-
-				  <p>Configuration notes:</p>
-				  <ul>
-					  <li>The key is the path prefix, e.g. <code>/google</code></li>
-					  <li><code>targetDomain</code> is the target domain</li>
-					  <li><code>pathMapping</code> defines path mapping rules</li>
-				  </ul>
+				  <h2>Latency Test</h2>
+				  <p>Select endpoints to test, then click start:</p>
+				  <div id="targets">__UPSTREAM_CHECKBOXES__</div>
+				  <p><button onclick="runLatencyTest()" style="padding:8px 20px;cursor:pointer">Start Test</button></p>
+				  <div id="results" style="display:none">
+					  <table><thead><tr><th>Endpoint</th><th>Latency</th><th>Status</th></tr></thead><tbody></tbody></table>
+				  </div>
 			  </section>
 		  </div>
 
@@ -827,7 +813,33 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 			  <p>Open sourced under the MIT License</p>
 		  </div>
 	  </footer>
-  </body>
+  <script>
+const FIXED_QUERY = 'AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=';
+async function runLatencyTest() {
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  const tbody = results.querySelector('tbody');
+  tbody.innerHTML = '';
+  const checks = document.querySelectorAll('#targets input:checked');
+  if (!checks.length) { tbody.innerHTML = '<tr><td colspan=3>未选择端点</td></tr>'; return; }
+  const tasks = [...checks].map(async cb => {
+    const name = cb.value;
+    const row = tbody.insertRow();
+    row.innerHTML = '<td><strong>' + name + '</strong></td><td>...</td><td>...</td>';
+    const start = performance.now();
+    try {
+      const res = await fetch('/' + name + '/query-dns?dns=' + FIXED_QUERY);
+      row.cells[1].textContent = (performance.now() - start).toFixed(0) + 'ms';
+      row.cells[2].textContent = res.ok ? '\u2705' : '\u274C ' + res.status;
+    } catch(e) {
+      row.cells[1].textContent = '-';
+      row.cells[2].textContent = '\u274C';
+    }
+  });
+  await Promise.all(tasks);
+}
+</script>
+</body>
 
   </html>`;
 
@@ -836,7 +848,13 @@ function serveHomepage(request) {
 	const host = new URL(request.url).host;
 	const names = Object.keys(DNS_UPSTREAMS).map(k => '<strong>' + k.slice(1) + '</strong>').join(', ');
 	const list = names || '<strong>未启用</strong>';
-	const html = HOMEPAGE_HTML.replaceAll('__HOST__', host).replace('__UPSTREAM_LIST__', list);
+	const checkboxes = Object.keys(DNS_UPSTREAMS).map(k => {
+		const name = k.slice(1);
+		return '<label><input type="checkbox" value="' + name + '" checked> <strong>' + name + '</strong></label>';
+	}).join(' ') || '无';
+	const html = HOMEPAGE_HTML.replaceAll('__HOST__', host)
+		.replace('__UPSTREAM_LIST__', list)
+		.replace('__UPSTREAM_CHECKBOXES__', checkboxes);
 	return new Response(html, {
 		status: 200,
 		headers: { 'Content-Type': 'text/html; charset=utf-8' },
@@ -847,7 +865,13 @@ function serveHomepageEn(request) {
 	const host = new URL(request.url).host;
 	const names = Object.keys(DNS_UPSTREAMS).map(k => '<strong>' + k.slice(1) + '</strong>').join(', ');
 	const list = names || '<strong>none</strong>';
-	const html = HOMEPAGE_HTML_EN.replaceAll('__HOST__', host).replace('__UPSTREAM_LIST__', list);
+	const checkboxes = Object.keys(DNS_UPSTREAMS).map(k => {
+		const name = k.slice(1);
+		return '<label><input type="checkbox" value="' + name + '" checked> <strong>' + name + '</strong></label>';
+	}).join(' ') || 'none';
+	const html = HOMEPAGE_HTML_EN.replaceAll('__HOST__', host)
+		.replace('__UPSTREAM_LIST__', list)
+		.replace('__UPSTREAM_CHECKBOXES__', checkboxes);
 	return new Response(html, {
 		status: 200,
 		headers: { 'Content-Type': 'text/html; charset=utf-8' },
