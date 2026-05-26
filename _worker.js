@@ -19,6 +19,8 @@ const DNS_UPSTREAMS = {
 const ECS_ENABLED = {
 	'/google':  true,
 	'/quad9':   true,
+	'/adguard': true,
+	'/opendns': true,
 };
 // ==========================================
 
@@ -933,7 +935,7 @@ function injectECS(body, clientIP) {
 
 	// No OPT record — append one with ECS
 	const parts = clientIP.split('.');
-	const optLen = 11 + 12; // OPT header + ECS option (8 + 4 pad)
+	const optLen = 23; // NAME(1)+TYPE(2)+CLASS(2)+TTL(4)+RDLENGTH(2)+ECS(12)
 	const newData = new Uint8Array(data.length + optLen);
 	newData.set(data);
 	const pos = data.length;
@@ -949,7 +951,6 @@ function injectECS(body, clientIP) {
 	newData[pos + 17] = 24; // PREFIX
 	newData[pos + 18] = 0; // SCOPE
 	for (let j = 0; j < 4; j++) newData[pos + 19 + j] = parseInt(parts[j]);
-	for (let j = 0; j < 4; j++) newData[pos + 23 + j] = 0; // pad
 
 	newData[10] = (arcount + 1) >> 8;
 	newData[11] = (arcount + 1) & 0xFF;
