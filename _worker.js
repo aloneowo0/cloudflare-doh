@@ -938,6 +938,9 @@ function injectECS(body, clientIP) {
 	const optLen = 23; // OPT header(11) + ECS option(12)
 	const newData = new Uint8Array(data.length + optLen);
 	newData.set(data);
+	// Randomize query ID (some servers reject ID=0)
+	newData[0] = 42;
+	newData[1] = 0;
 	const pos = data.length;
 	newData[pos] = 0; // NAME: root
 	newData[pos + 1] = 0; newData[pos + 2] = 41; // TYPE: OPT
@@ -948,7 +951,7 @@ function injectECS(body, clientIP) {
 	newData[pos + 11] = 0; newData[pos + 12] = 8; // CODE=8
 	newData[pos + 13] = 0; newData[pos + 14] = 8; // LEN=8
 	newData[pos + 15] = 0; newData[pos + 16] = 1; // FAMILY=IPv4
-	newData[pos + 17] = 24; // SOURCE PREFIX
+	newData[pos + 17] = 32; // SOURCE PREFIX
 	newData[pos + 18] = 0; // SCOPE PREFIX
 	for (let j = 0; j < 4; j++) newData[pos + 19 + j] = parseInt(parts[j]);
 
