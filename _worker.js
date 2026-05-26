@@ -217,20 +217,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   
 		  <section>
 			  <h2>使用方法</h2>
-			  <p>本服务已部署到 Cloudflare，您可以直接使用以下地址进行 DNS 查询：</p>
-  
-			  <h3>使用 Google DoH 服务</h3>
-			  <div class="example">
-				  <code>https://__HOST__/google/query-dns?name=example.com</code>
-			  </div>
-  
-			  <h3>使用 Cloudflare DoH 服务</h3>
-			  <div class="example">
-				  <code>https://__HOST__/cloudflare/query-dns?name=example.com</code>
-			  </div>
-  
-			  <h3>HTTP 请求示例</h3>
-			  <pre><code>curl -H "accept: application/dns-json" "https://__HOST__/google/query-dns?name=example.com&type=A"</code></pre>
+			  <p>已启用端点：__UPSTREAM_LIST__</p>
 		  </section>
   
 		  <div class="grid">
@@ -620,20 +607,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 
 		  <section>
 			  <h2>Usage</h2>
-			  <p>This service is deployed on Cloudflare. You can use the following addresses directly for DNS queries:</p>
-
-			  <h3>Using Google DoH</h3>
-			  <div class="example">
-				  <code>https://__HOST__/google/query-dns?name=example.com</code>
-			  </div>
-
-			  <h3>Using Cloudflare DoH</h3>
-			  <div class="example">
-				  <code>https://__HOST__/cloudflare/query-dns?name=example.com</code>
-			  </div>
-
-			  <h3>HTTP Request Example</h3>
-			  <pre><code>curl -H "accept: application/dns-json" "https://__HOST__/google/query-dns?name=example.com&type=A"</code></pre>
+			  <p>Enabled endpoints: __UPSTREAM_LIST__</p>
 		  </section>
 
 		  <div class="grid">
@@ -823,7 +797,10 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 
 
 function serveHomepage(request) {
-	const html = HOMEPAGE_HTML.replaceAll('__HOST__', new URL(request.url).host);
+	const host = new URL(request.url).host;
+	const names = Object.keys(DNS_UPSTREAMS).map(k => k.slice(1)).join(', ');
+	const list = names || '未启用';
+	const html = HOMEPAGE_HTML.replaceAll('__HOST__', host).replace('__UPSTREAM_LIST__', list);
 	return new Response(html, {
 		status: 200,
 		headers: { 'Content-Type': 'text/html; charset=utf-8' },
@@ -831,7 +808,10 @@ function serveHomepage(request) {
 }
 
 function serveHomepageEn(request) {
-	const html = HOMEPAGE_HTML_EN.replaceAll('__HOST__', new URL(request.url).host);
+	const host = new URL(request.url).host;
+	const names = Object.keys(DNS_UPSTREAMS).map(k => k.slice(1)).join(', ');
+	const list = names || 'none';
+	const html = HOMEPAGE_HTML_EN.replaceAll('__HOST__', host).replace('__UPSTREAM_LIST__', list);
 	return new Response(html, {
 		status: 200,
 		headers: { 'Content-Type': 'text/html; charset=utf-8' },
