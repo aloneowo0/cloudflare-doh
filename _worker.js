@@ -214,10 +214,14 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 				  <li><strong>轻量级部署</strong>：基于 Cloudflare Worker/Pages，无需维护服务器</li>
 			  </ul>
 		  </section>
-  
+   
+		  <section>
+			  <h2>已启用端点</h2>
+			  <p>__UPSTREAM_LIST__</p>
+		  </section>
+   
 		  <section>
 			  <h2>使用方法</h2>
-			  <p>已启用端点：__UPSTREAM_LIST__</p>
 			  <p>本服务已部署到 Cloudflare，您可以直接使用以下地址进行 DNS 查询：</p>
    
 			  <h3>使用 Google DoH 服务</h3>
@@ -618,10 +622,14 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 				  <li><strong>Lightweight deployment</strong>: Based on Cloudflare Worker/Pages, no server maintenance needed</li>
 			  </ul>
 		  </section>
-
+   
+		  <section>
+			  <h2>Enabled Endpoints</h2>
+			  <p>__UPSTREAM_LIST__</p>
+		  </section>
+   
 		  <section>
 			  <h2>Usage</h2>
-			  <p>Enabled endpoints: __UPSTREAM_LIST__</p>
 			  <p>This service is deployed on Cloudflare. You can use the following addresses directly for DNS queries:</p>
 
 			  <h3>Using Google DoH</h3>
@@ -826,8 +834,8 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 
 function serveHomepage(request) {
 	const host = new URL(request.url).host;
-	const names = Object.keys(DNS_UPSTREAMS).map(k => k.slice(1)).join(', ');
-	const list = names || '未启用';
+	const names = Object.keys(DNS_UPSTREAMS).map(k => '<strong>' + k.slice(1) + '</strong>').join(', ');
+	const list = names || '<strong>未启用</strong>';
 	const html = HOMEPAGE_HTML.replaceAll('__HOST__', host).replace('__UPSTREAM_LIST__', list);
 	return new Response(html, {
 		status: 200,
@@ -837,8 +845,8 @@ function serveHomepage(request) {
 
 function serveHomepageEn(request) {
 	const host = new URL(request.url).host;
-	const names = Object.keys(DNS_UPSTREAMS).map(k => k.slice(1)).join(', ');
-	const list = names || 'none';
+	const names = Object.keys(DNS_UPSTREAMS).map(k => '<strong>' + k.slice(1) + '</strong>').join(', ');
+	const list = names || '<strong>none</strong>';
 	const html = HOMEPAGE_HTML_EN.replaceAll('__HOST__', host).replace('__UPSTREAM_LIST__', list);
 	return new Response(html, {
 		status: 200,
