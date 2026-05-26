@@ -15,6 +15,14 @@ const DNS_UPSTREAMS = {
 };
 // =======================================
 
+// ====== ECS (Client Subnet) Whitelist ======
+// Set to true to inject client IP into DNS queries sent to this upstream
+const ECS_ENABLED = {
+	'/google':  true,
+	'/quad9':   true,
+};
+// ==========================================
+
 const HOMEPAGE_HTML = `<!DOCTYPE html>
   <html lang="zh-CN">
   
@@ -848,6 +856,108 @@ async function runLatencyTest() {
   </html>`;
 
 
+function injectECS(body, clientIP) {
+	const data = new Uint8Array(body);
+	if (data.length < 12) return body;
+
+	const qdcount = (data[4] << 8) | data[5];
+	const ancount = (data[6] << 8) | data[7];
+	const nscount = (data[8] << 8) | data[9];
+	const arcount = (data[10] << 8) | data[11];
+
+	function skipName(off) {
+		while (off < data.length) {
+			const len = data[off];
+			if (len === 0) return off + 1;
+			if ((len & 0xC0) === 0xC0) return off + 2;
+			off += 1 + len;
+		}
+		return off;
+	}
+
+	let off = 12;
+	for (let i = 0; i < qdcount; i++) { off = skipName(off); off += 4; }
+	for (let i = 0; i < ancount; i++) {
+		off = skipName(off);
+		const rdlen = (data[off + 8] << 8) | data[off + 9];
+		off += 10 + rdlen;
+	}
+	for (let i = 0; i < nscount; i++) {
+		off = skipName(off);
+		const rdlen = (data[off + 8] << 8) | data[off + 9];
+		off += 10 + rdlen;
+	}
+
+	// Check existing additional records for OPT (TYPE=41)
+	for (let i = 0; i < arcount; i++) {
+		const nameEnd = skipName(off);
+		const type = (data[nameEnd] << 8) | data[nameEnd + 1];
+		const rdlen = (data[nameEnd + 8] << 8) | data[nameEnd + 9];
+		if (type === 41) {
+			// OPT exists, check for ECS option
+			let optOff = nameEnd + 10;
+			const optEnd = optOff + rdlen;
+			while (optOff < optEnd) {
+				const optCode = (data[optOff] << 8) | data[optOff + 1];
+				const optLen = (data[optOff + 2] << 8) | data[optOff + 3];
+				if (optCode === 8) {
+					// ECS already present, overwrite address
+					if (optLen >= 4 && clientIP.includes('.')) {
+						data[optOff + 6] = 24; // prefix length
+						const parts = clientIP.split('.');
+						for (let j = 0; j < 4; j++) data[optOff + 8 + j] = parseInt(parts[j]);
+					}
+					return data.buffer;
+				}
+				optOff += 4 + optLen;
+			}
+			// OPT exists but no ECS — append ECS option
+			const newRdlen = rdlen + 12;
+			data[nameEnd + 8] = newRdlen >> 8;
+			data[nameEnd + 9] = newRdlen & 0xFF;
+			const newData = new Uint8Array(data.length + 12);
+			newData.set(data.subarray(0, optOff));
+			// ECS option: CODE=8, LEN=8, FAMILY=1, PREFIX=24, SCOPE=0
+			newData[optOff] = 0; newData[optOff + 1] = 8;
+			newData[optOff + 2] = 0; newData[optOff + 3] = 8;
+			newData[optOff + 4] = 0; newData[optOff + 5] = 1;
+			newData[optOff + 6] = 24;
+			newData[optOff + 7] = 0;
+			const parts = clientIP.split('.');
+			for (let j = 0; j < 4; j++) newData[optOff + 8 + j] = parseInt(parts[j]);
+			newData.set(new Uint8Array(4), optOff + 12); // pad to 4 bytes
+			for (let j = 0; j < 4; j++) newData[optOff + 12 + j] = 0;
+			newData.set(data.subarray(optOff), optOff + 16);
+			return newData.buffer;
+		}
+		off = nameEnd + 10 + rdlen;
+	}
+
+	// No OPT record — append one with ECS
+	const parts = clientIP.split('.');
+	const optLen = 11 + 12; // OPT header + ECS option (8 + 4 pad)
+	const newData = new Uint8Array(data.length + optLen);
+	newData.set(data);
+	const pos = data.length;
+	newData[pos] = 0; // NAME: root
+	newData[pos + 1] = 0; newData[pos + 2] = 41; // TYPE: OPT
+	newData[pos + 3] = 0x12; newData[pos + 4] = 0x34; // CLASS: 4096
+	newData[pos + 5] = 0; newData[pos + 6] = 0; newData[pos + 7] = 0; newData[pos + 8] = 0; // TTL
+	newData[pos + 9] = 0; newData[pos + 10] = 12; // RDLENGTH
+	// ECS option
+	newData[pos + 11] = 0; newData[pos + 12] = 8; // CODE=8
+	newData[pos + 13] = 0; newData[pos + 14] = 8; // LEN=8
+	newData[pos + 15] = 0; newData[pos + 16] = 1; // FAMILY=IPv4
+	newData[pos + 17] = 24; // PREFIX
+	newData[pos + 18] = 0; // SCOPE
+	for (let j = 0; j < 4; j++) newData[pos + 19 + j] = parseInt(parts[j]);
+	for (let j = 0; j < 4; j++) newData[pos + 23 + j] = 0; // pad
+
+	newData[10] = (arcount + 1) >> 8;
+	newData[11] = (arcount + 1) & 0xFF;
+	return newData.buffer;
+}
+
 function serveHomepage(request) {
 	const host = new URL(request.url).host;
 	const names = Object.keys(DNS_UPSTREAMS).map(k => '<strong>' + k.slice(1) + '</strong>').join(', ');
@@ -899,10 +1009,23 @@ async function handleRequest(request) {
 
 	if (pathPrefix) {
 		const newUrl = DNS_UPSTREAMS[pathPrefix] + queryString;
+		let body = request.body;
+
+		if (ECS_ENABLED[pathPrefix] && request.method === 'POST') {
+			const contentType = request.headers.get('content-type') || '';
+			if (contentType.includes('application/dns-message')) {
+				const clientIP = request.headers.get('CF-Connecting-IP');
+				if (clientIP) {
+					const raw = await request.arrayBuffer();
+					body = injectECS(raw, clientIP);
+				}
+			}
+		}
+
 		const newRequest = new Request(newUrl, {
 			method: request.method,
 			headers: request.headers,
-			body: request.body,
+			body: body,
 			redirect: 'follow',
 		});
 		return fetch(newRequest);
