@@ -407,6 +407,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 	  </footer>
   <script>
 const FIXED_QUERY='AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=';
+function b64toBytes(b64){const bin=atob(b64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes}
 document.querySelectorAll('#targets input').forEach(cb => {
   cb.addEventListener('change', e => e.target.parentElement.classList.toggle('checked', e.target.checked));
   cb.parentElement.classList.add('checked');
@@ -420,7 +421,7 @@ async function runLatencyTest() {
     const name=cb.value,row=tbody.insertRow();
     row.innerHTML='<td><strong>'+name+'</strong></td><td style="color:#999">...</td><td style="color:#999">...</td>';
     const start=performance.now();
-    try{const res=await fetch('/'+name+'/query-dns?dns='+FIXED_QUERY);row.cells[1].textContent=(performance.now()-start).toFixed(0)+'ms';row.cells[2].textContent=res.ok?'\u2705':'\u274C '+res.status}
+    try{const res=await fetch('/'+name+'/query-dns',{method:'POST',headers:{'Content-Type':'application/dns-message'},body:b64toBytes(FIXED_QUERY)});row.cells[1].textContent=(performance.now()-start).toFixed(0)+'ms';row.cells[2].textContent=res.ok?'\u2705':'\u274C '+res.status}
     catch(e){row.cells[1].textContent='-';row.cells[2].textContent='\u274C'}
   });
   await Promise.all(tasks);
@@ -822,6 +823,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 	  </footer>
   <script>
 const FIXED_QUERY='AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE=';
+function b64toBytes(b64){const bin=atob(b64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes}
 document.querySelectorAll('#targets input').forEach(cb => {
   cb.addEventListener('change', e => e.target.parentElement.classList.toggle('checked', e.target.checked));
   cb.parentElement.classList.add('checked');
@@ -835,7 +837,7 @@ async function runLatencyTest() {
     const name=cb.value,row=tbody.insertRow();
     row.innerHTML='<td><strong>'+name+'</strong></td><td style="color:#999">...</td><td style="color:#999">...</td>';
     const start=performance.now();
-    try{const res=await fetch('/'+name+'/query-dns?dns='+FIXED_QUERY);row.cells[1].textContent=(performance.now()-start).toFixed(0)+'ms';row.cells[2].textContent=res.ok?'\u2705':'\u274C '+res.status}
+    try{const res=await fetch('/'+name+'/query-dns',{method:'POST',headers:{'Content-Type':'application/dns-message'},body:b64toBytes(FIXED_QUERY)});row.cells[1].textContent=(performance.now()-start).toFixed(0)+'ms';row.cells[2].textContent=res.ok?'\u2705':'\u274C '+res.status}
     catch(e){row.cells[1].textContent='-';row.cells[2].textContent='\u274C'}
   });
   await Promise.all(tasks);
