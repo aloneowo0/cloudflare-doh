@@ -9,8 +9,6 @@ const DNS_UPSTREAMS = {
 	'/google':     'https://dns.google/dns-query',
 	'/cloudflare': 'https://cloudflare-dns.com/dns-query',
 	'/quad9':      'https://dns11.quad9.net/dns-query',
-	'/adguard':    'https://dns.adguard-dns.com/dns-query',
-	'/opendns':    'https://dns.opendns.com/dns-query',
 };
 // =======================================
 
@@ -19,8 +17,6 @@ const DNS_UPSTREAMS = {
 const ECS_ENABLED = {
 	'/google':  true,
 	'/quad9':   true,
-	'/adguard': true,
-	'/opendns': true,
 };
 // ==========================================
 
