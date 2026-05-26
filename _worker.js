@@ -1,5 +1,6 @@
 /**
- * Cloudflare Worker DoH Service
+ * aloneowo's DoH Service
+ * Forked from jqknono/cloudflare-doh
  * Edit DNS_UPSTREAMS below to add/remove providers.
  */
 
@@ -30,7 +31,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   <head>
 	  <meta charset="UTF-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <title>Cloudflare DoH 服务 - 简单高效的 DNS over HTTPS 服务</title>
+	  <title>aloneowo 的 DoH 服务 - 简单高效的 DNS over HTTPS 服务</title>
 	  <style>
 		  :root {
 			  --primary-color: #f6821f;
@@ -213,7 +214,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 	  <header>
 		  <div class="container">
 			  <a href="/en" class="lang-switch">EN</a>
-			  <h1>Cloudflare DoH 服务</h1>
+			  <h1>aloneowo 的 DoH 服务</h1>
 			  <p class="subtitle">一个轻量级的 DNS over HTTPS (DoH) 服务</p>
 		  </div>
 	  </header>
@@ -221,7 +222,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 	  <div class="container">
 		  <section>
 			  <h2>项目介绍</h2>
-			  <p>Cloudflare DoH 服务是一个基于 Cloudflare Workers 的轻量级服务，能够根据请求路径将 DNS 查询路由到不同的 DoH 服务提供商，同时保留原始查询参数。</p>
+			  <p>aloneowo 的 DoH 服务是一个基于 Cloudflare Workers 的轻量级服务，能够根据请求路径将 DNS 查询路由到不同的 DoH 服务提供商，同时保留原始查询参数。</p>
   
 			  <h3>主要功能</h3>
 			  <ul>
@@ -247,7 +248,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 				  <code>https://__HOST__/google/query-dns?name=example.com</code>
 			  </div>
    
-			  <h3>使用 Cloudflare DoH 服务</h3>
+			  <h3>使用 aloneowo 的 DoH 服务</h3>
 			  <div class="example">
 				  <code>https://__HOST__/cloudflare/query-dns?name=example.com</code>
 			  </div>
@@ -279,7 +280,7 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
   
 				  <div class="github-link">
 					  <p>获取完整部署说明:</p>
-					  <a href="https://github.com/jqknono/cloudflare-doh" class="btn" target="_blank">GitHub 仓库</a>
+					  <a href="https://github.com/aloneowo0/cloudflare-doh" class="btn" target="_blank">GitHub 仓库</a>
 				  </div>
 			  </section>
   
@@ -404,14 +405,14 @@ const HOMEPAGE_HTML = `<!DOCTYPE html>
 		  <div class="cta">
 			  <h2>开始使用</h2>
 			  <p>开始部署你的 DoH 服务，或直接使用我们的服务</p>
-			  <a href="https://github.com/jqknono/cloudflare-doh" class="btn">获取代码</a>
+			  <a href="https://github.com/aloneowo0/cloudflare-doh" class="btn">获取代码</a>
 		  </div>
 	  </div>
   
 	  <footer>
 		  <div class="container">
-			  <p>Cloudflare DoH 服务 &copy; 2023</p>
-			  <p>基于 MIT 许可协议开源</p>
+			  <p>aloneowo's DoH Service</p>
+			  <p>Forked from <a href="https://github.com/jqknono/cloudflare-doh" style="color:#f6821f">jqknono/cloudflare-doh</a> | MIT License</p>
 		  </div>
 	  </footer>
   <script>
@@ -446,7 +447,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
   <head>
 	  <meta charset="UTF-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <title>Cloudflare DoH Service - DNS over HTTPS</title>
+	  <title>aloneowo's DoH Service - DNS over HTTPS</title>
 	  <style>
 		  :root {
 			  --primary-color: #f6821f;
@@ -628,7 +629,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 	  <header>
 		  <div class="container">
 			  <a href="/" class="lang-switch">中文</a>
-			  <h1>Cloudflare DoH Service</h1>
+			  <h1>aloneowo's DoH Service</h1>
 			  <p class="subtitle">A lightweight DNS over HTTPS (DoH) service</p>
 		  </div>
 	  </header>
@@ -636,7 +637,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 	  <div class="container">
 		  <section>
 			  <h2>Introduction</h2>
-			  <p>Cloudflare DoH Service is a lightweight service based on Cloudflare Workers that routes DNS queries to different DoH providers based on the request path while preserving original query parameters.</p>
+			  <p>aloneowo's DoH Service is a lightweight service based on Cloudflare Workers that routes DNS queries to different DoH providers based on the request path while preserving original query parameters.</p>
 
 			  <h3>Key Features</h3>
 			  <ul>
@@ -694,7 +695,7 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 
 				  <div class="github-link">
 					  <p>Get full deployment instructions:</p>
-					  <a href="https://github.com/jqknono/cloudflare-doh" class="btn" target="_blank">GitHub Repository</a>
+					  <a href="https://github.com/aloneowo0/cloudflare-doh" class="btn" target="_blank">GitHub Repository</a>
 				  </div>
 			  </section>
 
@@ -819,14 +820,14 @@ const HOMEPAGE_HTML_EN = `<!DOCTYPE html>
 		  <div class="cta">
 			  <h2>Get Started</h2>
 			  <p>Deploy your own DoH service or start using ours directly</p>
-			  <a href="https://github.com/jqknono/cloudflare-doh" class="btn">Get the Code</a>
+			  <a href="https://github.com/aloneowo0/cloudflare-doh" class="btn">Get the Code</a>
 		  </div>
 	  </div>
 
 	  <footer>
 		  <div class="container">
-			  <p>Cloudflare DoH Service &copy; 2023</p>
-			  <p>Open sourced under the MIT License</p>
+			  <p>aloneowo's DoH Service</p>
+			  <p>Forked from <a href="https://github.com/jqknono/cloudflare-doh" style="color:#f6821f">jqknono/cloudflare-doh</a> | MIT License</p>
 		  </div>
 	  </footer>
   <script>

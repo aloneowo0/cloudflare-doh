@@ -1,8 +1,8 @@
-# Cloudflare DoH 服务
+# DoH 转发服务
 
-![使用演示](https://i.imgur.com/hu6F10P.gif)
+> by [aloneowo](https://github.com/aloneowo0) | 感谢 [jqknono/cloudflare-doh](https://github.com/aloneowo0/cloudflare-doh)
 
-这是一个基于 Cloudflare Workers 的 DNS over HTTPS (DoH) 服务服务。本服务可以根据路径将请求路由到不同的 DoH 提供商，同时保留查询参数。
+这是一个基于 Cloudflare Workers 的 DNS over HTTPS (DoH) 服务。本服务可以根据路径将请求路由到不同的 DoH 提供商，同时保留查询参数，并支持 ECS 注入、延迟检测。
 
 ## 功能特点
 
@@ -87,6 +87,6 @@ const DNS_UPSTREAMS = {
 
 ## 许可协议
 
-本项目采用 [MIT 许可协议](LICENSE)。您可以自由地使用、修改和分发本代码，但需要在您的项目中包含原始许可证和版权声明。
+本项目 Fork 自 [jqknono/cloudflare-doh](https://github.com/jqknono/cloudflare-doh)，采用 [MIT 许可协议](LICENSE)。您可以自由地使用、修改和分发本代码，但需要在您的项目中包含原始许可证和版权声明。
 
 
